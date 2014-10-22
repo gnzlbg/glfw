@@ -16,6 +16,49 @@ License: [Boost Software License 1.0](http://www.boost.org/users/license.html);
 
 ## Example:
 
+```c++
+#include <glfw/glfw.hpp>
+
+glfw::environment::static_data glfw::environment::data;
+
+int main() {
+  glfw::environment env;
+
+  glfw::window::hint(glfw::window_attribute::opengl_profile,
+                     GLFW_OPENGL_CORE_PROFILE);
+  glfw::window::hint(glfw::window_attribute::opengl_forward_compat, GL_TRUE);
+  glfw::window::hint(glfw::window_attribute::context_version_major, 4);
+  glfw::window::hint(glfw::window_attribute::context_version_minor, 1);
+
+  glfw::window window{{1024, 768}, "my window"};
+
+  while (window) {
+    glfw::event event;
+    while (window.poll(event)) {
+      fprintf(stdout, "event: %s", to_string(event.type).c_str());
+      switch (event.type) {
+        case glfw::event_type::window_closed: {
+          window.close();
+          break;
+        }
+        case glfw::event_type::key_pressed: {
+          if (event.key.key == glfw::key::ESCAPE) {
+            window.close();
+            break;
+          }
+        }
+      }
+    }
+  }
+  return 0;
+}
+```
+
+## Todo:
+
+- enums for the configuration
+- clean up the static storage of environment a bit.
+
 ## Main types:
 
 - `glfw::environment`: only one instance should be created (typically by the
